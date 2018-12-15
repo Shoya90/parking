@@ -15,8 +15,8 @@ reservationController.reserve = function (req, res) {
     Reservation.find({
         $or: [
             {
-                userId : req.body.userId,
-                ongoing : true
+                userId: req.body.userId,
+                ongoing: true
             },
             {
                 parkingId: req.body.parkingId,
@@ -62,24 +62,24 @@ reservationController.reserve = function (req, res) {
  * req.body.uesrId
  */
 reservationController.cancel = function (req, res) {
-    Reservation.findOneAndUpdate(
+    Reservation.findOneAndDelete(
         {
             userId: req.body.userId,
             _id: req.body.reservationId
-        },
-        {
-            $set: {
-                ongoing: false
-            }
-        },
-        {
-            new: true
         })
         .then(function (reservation) {
-            res.status(200)
-            res.json({
-                reservation: reservation
-            })
+            if (reservation) {
+                res.status(200)
+                res.json({
+                    reservation: reservation
+                })
+            }
+            else {
+                res.status(400)
+                res.json({
+                    message : 'no such reservation'
+                })
+            }
         })
         .catch(function (err) {
             res.status(500)

@@ -6,8 +6,8 @@ const MINIMUN_DISTANCE = 2000
 
 const parkingController = {}
 /**
- * req.body.userId
- * req.body.parkingId
+ * @param lat
+ * @param lng
  */
 parkingController.getAvailableSpots = function (req, res) {
     var all_parkings = []
@@ -77,7 +77,6 @@ function isSpotFree(parking_id, reservations){
             return true
         }
         
-        // return !reservations[index].ongoing
     }
 }
 
