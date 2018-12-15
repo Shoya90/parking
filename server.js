@@ -5,6 +5,9 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
 const router = require('./router')(express)
+const reservationsCronJob = require('./reservationsCronJob')
+
+// require 
 
 // import db address and port from configuration file
 const { db, port } = require('./config/config')
@@ -15,6 +18,7 @@ mongoose.connect(db, { useNewUrlParser : true }, function(err, connection){
         return console.dir(err)
     }
     console.log('Connected to Mongo successfully!')
+    reservationsCronJob()
 })
 
 // middlewares

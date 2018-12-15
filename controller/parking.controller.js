@@ -1,9 +1,8 @@
 const Parking = require('../model/parking.model')
 const Reservation = require('../model/reservation.model')
-
+const { MAX_RESERVE_TIME } = require('../config/config')
 // an arbitrary distance value 
 const MINIMUN_DISTANCE = 2000
-const MAX_RESERVE_TIME = 15*60*1000
 
 const parkingController = {}
 /**
