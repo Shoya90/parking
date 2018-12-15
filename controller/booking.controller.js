@@ -1,4 +1,4 @@
-const Payment = require('../model/reservation.model')
+const Payment = require('../model/payment.model')
 const Reservation = require('../model/reservation.model')
 
 const bookingController = {}
@@ -12,22 +12,22 @@ bookingController.book = function (req, res) {
     payment.userId = req.body.userId
     payment.parkingId = req.body.parkingId
 
-    Reservation.findOne({
-        userId: newPayment.userId,
-        parkingId: newPayment.parkingId,
+    Reservation.findOneAndUpdate({
+        userId: req.body.userId,
+        parkingId: req.body.parkingId,
         ongoing: true,
         paid: false
     },
-        function (err, reservation) {
-            if (err) {
-                res.status(500)
-                res.json({
-                    message: 'error booking the spot'
-                })
+        {
+            $set: {
+                paid: true,
+                paymentId: payment.id
             }
-            else if (reservation) {
-                reservation.paid = true
-            } else {
+        }
+    )
+        .then(function (reservation) {
+            if (reservation) {
+
                 payment.save(function (err, newPayment) {
                     if (err) {
                         res.status(500)
@@ -43,18 +43,53 @@ bookingController.book = function (req, res) {
                     }
                 })
             }
-        }
-    )
+            else {
+                res.status(400)
+                res.json({
+                    message: 'bad request, already paid or ended'
+                })
+            }
+        })
+        .catch(function (err) {
+            res.status(500)
+            res.json({
+                message: 'error booking the spot'
+            })
+        })
 
 
 }
 
 /**
- * req.body.reservationId
- * req.body.uesrId
+ * req.body.paymentId
  */
 bookingController.end = function (req, res) {
-    //
+    Reservation.findOneAndDelete({
+        paymentId: req.body.paymentId,
+        ongoing: true,
+        paid: true
+    }
+    )
+        .then(function (reservation) {
+            if (reservation) {
+                res.status(200)
+                res.json({
+                    reservation: reservation
+                })
+            }
+            else {
+                res.status(400)
+                res.json({
+                    message: 'bad request, already paid or ended'
+                })
+            }
+        })
+        .catch(function (err) {
+            res.status(500)
+            res.json({
+                message: 'error ending the booking'
+            })
+        })
 }
 
 module.exports = bookingController

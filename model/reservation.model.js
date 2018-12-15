@@ -11,6 +11,10 @@ const reservationSchema = mongoose.Schema({
         ref : 'Parking',
         required : true
     },
+    paymentId : {
+        type : mongoose.Schema.ObjectId,
+        ref : 'Payment'
+    },
     ongoing : {
         type : Boolean,
         default : true
