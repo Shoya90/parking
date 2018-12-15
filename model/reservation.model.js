@@ -18,6 +18,10 @@ const reservationSchema = mongoose.Schema({
     paid : {
         type : Boolean,
         default : false
+    },
+    created_at : {
+        type : String,
+        default : Date.now()
     }
 })
 

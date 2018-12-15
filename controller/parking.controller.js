@@ -3,6 +3,7 @@ const Reservation = require('../model/reservation.model')
 
 // an arbitrary distance value 
 const MINIMUN_DISTANCE = 2000
+const MAX_RESERVE_TIME = 15*60*1000
 
 const parkingController = {}
 /**
@@ -12,7 +13,6 @@ const parkingController = {}
 parkingController.getAvailableSpots = function (req, res) {
     var all_parkings = []
     var free_parkings = []
-    var reserved_ids = []
     var user_position = {
         lat : req.query.lat,
         lng : req.query.lng
@@ -23,8 +23,7 @@ parkingController.getAvailableSpots = function (req, res) {
             return Reservation.find({})
         })
         .then(function(reservations){
-            reserved_ids = reservations.map(reservation => reservation.parkingId)
-            free_parkings = all_parkings.filter(parking => {return reserved_ids.indexOf(parking.id) < 0 && isSpotNear(parking, user_position)})
+            free_parkings = all_parkings.filter(parking => {return isSpotFree(parking.id, reservations) && isSpotNear(parking, user_position)})
             res.json(free_parkings)
         })
         .catch(function(err){
@@ -58,6 +57,29 @@ parkingController.createSpot = function(req, res){
             })
         }
     })
+}
+
+function isSpotFree(parking_id, reservations){
+    var reserved_ids = reservations.map(reservation => String(reservation.parkingId))
+    var index = reserved_ids.indexOf(parking_id)
+    if(index < 0){
+        return true
+    }
+    else{
+        let reservation = reservations[index]
+        let remaining_time = reservation.created_at - Date.now()
+        if(reservation.paid && reservation.ongoing){
+            return false
+        }
+        else if(!reservation.ongoing){
+            return true
+        }
+        else if(remaining_time > MAX_RESERVE_TIME && !reservation.paid){
+            return true
+        }
+        
+        // return !reservations[index].ongoing
+    }
 }
 
 function isSpotNear(spot, user_position){
