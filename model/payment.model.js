@@ -12,11 +12,9 @@ const paymentSchema = mongoose.Schema({
         required : true
     },
     created_at : {
-        type : Date,
+        type : String,
         default : Date.now()
-    },
-    total_time_hours : Number,
-    total_cost : Number
+    }
 })
 
 module.exports = mongoose.model('Payment', paymentSchema)
