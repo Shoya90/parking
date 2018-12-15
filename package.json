@@ -1,0 +1,25 @@
+{
+  "name": "parking",
+  "version": "1.0.0",
+  "description": "parking spot booking",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shoya90/parking.git"
+  },
+  "author": "shyoa moosavi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shoya90/parking/issues"
+  },
+  "homepage": "https://github.com/Shoya90/parking#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.0",
+    "morgan": "^1.9.1"
+  }
+}
