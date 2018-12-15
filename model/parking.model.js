@@ -11,4 +11,6 @@ const parkingSchema = mongoose.Schema({
     cost_per_hour : Number
 })
 
+
+
 module.exports = mongoose.model('Parking', parkingSchema)
